@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState, useEffect} from "react";
+import Searchbox from "./components/Searchbox";
+import Image from "./components/Image";
+import Spinner from "./components/Spinner";
 
 function App() {
+  const [placeholder, setPlaceholder] = useState("type a word");
+  const [searchWord, setSearchWord] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageLoaded, setImageLoaded]= useState(false);
+
+useEffect(()=> setImageUrl("https://loremflickr.com/320/240/" + searchWord + "?random=" + Math.floor(Math.random() * 10) + 1), [searchWord])
+// useEffect(()=> showLoadingMessage(imageLoaded), [imageLoaded])
+
+
+
+
+
+// function showLoadingMessage(imageLoaded) {if (!imageLoaded) {setImageUrl("./loading.gif")}}
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Searchbox
+        setSearchWord={setSearchWord}
+        setPlaceholder={setPlaceholder}
+        placeholder={placeholder}
+        setImageLoaded ={setImageLoaded}
+      />
+      {searchWord ? <Image imageUrl = {imageUrl} onLoad = {()=>{setImageLoaded(true); setPlaceholder("type a word")}}/> : ""}
+      {imageLoaded ? "" : <Spinner />}
+    </>
   );
 }
 
