@@ -10,7 +10,8 @@ const Searchbox = ({ setSearchWord , setPlaceholder , placeholder, setImageLoade
 
   return (
     <form onSubmit={search}>
-      <input type="text" maxLength="20" placeholder={placeholder}></input>
+      <label htmlFor="searchword">Ask the AI</label>
+      <input type="text" maxLength="20" placeholder={placeholder} id="searchword"></input>
       <button type="submit">look it up</button>
     </form>
   );

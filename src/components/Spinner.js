@@ -1,4 +1,4 @@
 const Spinner = () => {
-    return <img src= "./loading.gif" alt="loading" className = "spinner"/>
+    return <div className ="spinner"></div>
   }
   export default Spinner;
