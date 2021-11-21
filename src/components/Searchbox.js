@@ -1,18 +1,24 @@
-const Searchbox = ({ setSearchWord , setPlaceholder , placeholder, setImageLoaded }) => {
-  // const [placeholderText, setPlaceholder] = useState("type a word");
+import { useState } from "react";
+
+const Searchbox = ({ setSearchWord , setPlaceholder , placeholder, setImageLoaded, setArticleHeadline, setArticleText }) => {
+
+  const [inputText, setInputText] = useState("");
+
   const search = (evt) => {
     evt.preventDefault();
-    setSearchWord(document.querySelector("input").value);
-    document.querySelector("input").value = "";
+    setArticleHeadline(""); //för att den förra artikelns rubrik ej ska stå kvar under sökning
+    setArticleText("");
+    setSearchWord(inputText);
+    setInputText("");
     setPlaceholder("searching...");
-    setImageLoaded(false)
+    setImageLoaded(false); //den här gör så att det blir en spinner på bilden
   };
 
   return (
     <form onSubmit={search}>
-      <label htmlFor="searchword">Ask the AI</label>
-      <input type="text" maxLength="20" placeholder={placeholder} id="searchword"></input>
-      <button type="submit">look it up</button>
+      <label htmlFor="searchword">Please AI tell me about the:</label>
+      <input type="text" maxLength="20" placeholder={placeholder} id="searchword" value={inputText} onChange={e => setInputText(e.target.value)} />
+      <button type="submit">?</button>
     </form>
   );
 };

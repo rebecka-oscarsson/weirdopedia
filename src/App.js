@@ -7,8 +7,9 @@ import Fetch from "./components/Fetch";
 import Article from "./components/Article";
 import Footer from "./components/Footer";
 
-require('dotenv').config();
-const deepaiKey = process.env.REACT_APP_API_KEY_DEEPAI;
+//hämtar variabel från env-filen
+require("dotenv").config();
+const deepAiKey = process.env.REACT_APP_API_KEY_DEEPAI;
 
 function App() {
   const [placeholder, setPlaceholder] = useState("type a word");
@@ -19,16 +20,23 @@ function App() {
   const [articleText, setArticleText] = useState("");
   const [articleHeadline, setArticleHeadline] = useState("");
 
+  //npm-paket för att deepai ska funka
   const deepai = require("deepai");
-  deepai.setApiKey(deepaiKey);
+  deepai.setApiKey(deepAiKey);
 
-  useEffect(() => {async function fetchData() {if(articleHeadline){
-    var resp = await deepai.callStandardApi("text2img", {
-            text: articleHeadline,
-    });
-    setImageUrl(resp.output_url)}};
+  //körs när articleheadline ändras, det gör den när wikipedia-api:et har hämtats klar
+  useEffect(() => {
+    async function fetchData() {
+      if (articleHeadline) {
+        var resp = await deepai.callStandardApi("text2img", {
+          text: articleHeadline,
+        });
+        //det här är ett api som gör en bild från mitt sökord
+        setImageUrl(resp.output_url);
+      }
+    }
     fetchData();
-}, [articleHeadline]);
+  }, [articleHeadline]);
 
   useEffect(() => {
     if (searchWord) {
@@ -36,7 +44,7 @@ function App() {
         "https://en.wikipedia.org/api/rest_v1/page/summary/" +
           searchWord +
           "?origin=*",
-          //origin här är för att det inte ska bli cors-error
+        //origin här är för att det inte ska bli cors-error
         (data) => {
           setWiki(data.extract);
           setArticleHeadline(data.displaytitle);
@@ -51,26 +59,12 @@ function App() {
     }
   }, [wiki]);
 
-  // useEffect(() => {
-  //   if (imageLoaded) {
-  //     setCaption(getCaption());
-  //   }
-  // }, [imageLoaded]);
-
-  // async function getCaption() {
-  //   let resp = await deepai.callStandardApi("nsfw-detector", {
-  //     image: document.getElementById("image"),
-  //   });
-  //   console.log(resp);
-  //   return resp;
-  // }
-  // här behövs felhantering
-
   async function askAI(wikiText) {
+    //det här är api:et som hittar på mer text utifrån en inskickad
     let resp = await deepai.callStandardApi("text-generator", {
       text: wikiText,
     });
-    //tar bort wikipedia från början av texten
+    //tar bort wikipedia från början av texten för den returnerar bägge efter varandra
     const article = resp.output.substr(
       wikiText.length,
       wikiText.length + resp.output.length
@@ -86,6 +80,8 @@ function App() {
         setPlaceholder={setPlaceholder}
         placeholder={placeholder}
         setImageLoaded={setImageLoaded}
+        setArticleHeadline = {setArticleHeadline}
+        setArticleText = {setArticleText}
       />
       {searchWord ? (
         <Image
@@ -94,13 +90,13 @@ function App() {
             setImageLoaded(true);
             setPlaceholder("type a word");
           }}
-            caption={articleHeadline}
+          caption={articleHeadline}
         />
       ) : (
         ""
       )}
       {imageLoaded ? "" : <Spinner />}
-      {searchWord ? (
+      {articleHeadline ? (
         <Article articleText={articleText} articleHeadline={articleHeadline} />
       ) : (
         ""
