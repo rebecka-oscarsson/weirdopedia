@@ -16,7 +16,6 @@ function App() {
   const [searchWord, setSearchWord] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [imageLoaded, setImageLoaded] = useState(true);
-  const [wiki, setWiki] = useState("");
   const [articleText, setArticleText] = useState("");
   const [articleHeadline, setArticleHeadline] = useState("");
 
@@ -24,19 +23,14 @@ function App() {
   const deepai = require("deepai");
   deepai.setApiKey(deepAiKey);
 
+  
+
   //körs när articleheadline ändras, det gör den när wikipedia-api:et har hämtats klar
   useEffect(() => {
-    async function fetchData() {
-      if (articleHeadline) {
-        var resp = await deepai.callStandardApi("text2img", {
-          text: articleHeadline,
-        });
-        //det här är ett api som gör en bild från mitt sökord
-        setImageUrl(resp.output_url);
-      }
-    }
-    fetchData();
+    fetchImage();
   }, [articleHeadline]);
+  //vill jag ändra till searchword? Nu blir det error på allt om wikipedia ej funkar
+  //tror det är bäst så
 
   useEffect(() => {
     if (searchWord) {
@@ -46,18 +40,24 @@ function App() {
           "?origin=*",
         //origin här är för att det inte ska bli cors-error
         (data) => {
-          setWiki(data.extract);
+          askAI(data.extract);
           setArticleHeadline(data.displaytitle);
         }
       );
     }
   }, [searchWord]);
 
-  useEffect(() => {
-    if (wiki) {
-      askAI(wiki);
+//hämtningar från deepAI
+
+  async function fetchImage() {
+    if (articleHeadline) {
+      let resp = await deepai.callStandardApi("text2img", {
+        text: articleHeadline,
+      });
+      //det här är ett api som gör en bild från mitt sökord
+      setImageUrl(resp.output_url);
     }
-  }, [wiki]);
+  }
 
   async function askAI(wikiText) {
     //det här är api:et som hittar på mer text utifrån en inskickad
@@ -80,8 +80,8 @@ function App() {
         setPlaceholder={setPlaceholder}
         placeholder={placeholder}
         setImageLoaded={setImageLoaded}
-        setArticleHeadline = {setArticleHeadline}
-        setArticleText = {setArticleText}
+        setArticleHeadline={setArticleHeadline}
+        setArticleText={setArticleText}
       />
       {searchWord ? (
         <Image
