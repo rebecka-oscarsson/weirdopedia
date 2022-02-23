@@ -1,4 +1,4 @@
 const Spinner = () => {
-    return <div className ="spinner"></div>
+    return <figure><img src= "Gear.gif" alt="loading symbol" /></figure>
   }
   export default Spinner;
