@@ -2,13 +2,15 @@ const Image = ({
   imageUrl,
   setImageLoaded,
   imageLoaded,
-  caption,
+  articleHeadline,
   error
 }) => {
-  // let counter = 0;
-  // const imageText
 
-  let imageText = "A typical " + caption + " going about its business"
+  const articleSubjects = articleHeadline.toLowerCase()+"s";
+  const imageCaptions = [`Some prime specimens of ${articleSubjects}`, `A couple of particularly nasty looking ${articleSubjects}`, `Some typical ${articleSubjects} going about their business`]
+
+  const imageCaption = imageCaptions[Math.floor(Math.random()*imageCaptions.length)];
+
   
   return (error ? (
     <figure>
@@ -22,10 +24,10 @@ const Image = ({
     <figure>
       <img
         src={imageUrl}
-        alt={caption}
+        alt={articleHeadline}
         onLoad={() => setImageLoaded(true)}
       />
-      <figcaption>{imageLoaded? imageText : null}</figcaption>
+      <figcaption>{imageLoaded? imageCaption : null}</figcaption>
     </figure>
   )
   )
