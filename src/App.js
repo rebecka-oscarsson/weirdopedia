@@ -40,7 +40,7 @@ function App() {
         (data) => {
           console.log("wikipedia: ", data.extract);
           askAI(data.extract);
-          setArticleHeadline(data.displaytitle);
+          setArticleHeadline(data.title);
         },
         setError
       );
@@ -94,7 +94,7 @@ function App() {
           imageUrl={imageUrl}
           setImageLoaded={setImageLoaded}
           imageLoaded={imageLoaded}
-          caption={articleHeadline}
+          articleHeadline={articleHeadline}
           error={error}
         />
       ) : null}

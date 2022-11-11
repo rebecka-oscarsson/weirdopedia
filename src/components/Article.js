@@ -10,7 +10,7 @@ const Article = ({ articleText, articleHeadline, error, searchWord }) => {
   } else if (articleText) {
     return (
       <article>
-        <h2>About the {articleHeadline}:</h2>
+        <h2>About the {articleHeadline}</h2>
         {articleText}
       </article>
     );
