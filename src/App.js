@@ -8,7 +8,7 @@ import Article from "./components/Article";
 import Footer from "./components/Footer";
 
 //hämtar variabel från env-filen
-require("dotenv").config();
+//require("dotenv").config();
 const deepAiKey = process.env.REACT_APP_API_KEY_DEEPAI;
 
 function App() {
