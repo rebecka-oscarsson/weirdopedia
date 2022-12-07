@@ -7,9 +7,10 @@ import Fetch from "./components/Fetch";
 import Article from "./components/Article";
 import Footer from "./components/Footer";
 
-//hämtar variabel från env-filen
-//require("dotenv").config();
 const deepAiKey = process.env.REACT_APP_API_KEY_DEEPAI;
+//npm-paket för att deepai ska funka
+const deepai = require("deepai");
+deepai.setApiKey(deepAiKey);
 
 function App() {
   const [searchWord, setSearchWord] = useState([]);
@@ -19,13 +20,18 @@ function App() {
   const [articleHeadline, setArticleHeadline] = useState(""); //kommer från wikipedia, om det blir redirect är den ej samma som searchword
   const [error, setError] = useState(false);
 
-  //npm-paket för att deepai ska funka
-  const deepai = require("deepai");
-  deepai.setApiKey(deepAiKey);
 
   //körs när articleheadline ändras, det gör den när wikipedia-api:et har hämtats klar
   //det är bra så bilden ej hämtas om artikeln ej gör det, samt för rätt bildtext
   useEffect(() => {
+    async function fetchImage() {
+      if (articleHeadline) {
+        let resp = await deepai.callStandardApi("text2img", {
+          text: articleHeadline,
+        });
+        setImageUrl(resp.output_url);
+      }
+    }
     fetchImage();
   }, [articleHeadline]);
 
@@ -46,18 +52,6 @@ function App() {
       );
     }
   }, [searchWord]);
-
-  //hämtningar från deepAI
-
-  //det här är ett api som gör en bild från mitt sökord
-  async function fetchImage() {
-    if (articleHeadline) {
-      let resp = await deepai.callStandardApi("text2img", {
-        text: articleHeadline,
-      });
-      setImageUrl(resp.output_url);
-    }
-  }
 
   //det här är api:et som hittar på mer text utifrån en inskickad
   async function askAI(wikiText) {
